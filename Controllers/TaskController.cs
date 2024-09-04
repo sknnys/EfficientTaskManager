@@ -1,91 +1,75 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using EfficientTaskManager.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks; // Certifique-se de que este namespace está incluído
+using EfficientTaskManager.Models; // Importa o modelo de tarefa
+using TaskModel = EfficientTaskManager.Models.Task; // Alias para o modelo de tarefa
 using EfficientTaskManager.Services;
 
 namespace EfficientTaskManager.Controllers
 {
-    [Authorize]
     public class TaskController : Controller
     {
-        private readonly TaskService _taskService;
+        private readonly ITaskService _taskService;
 
-        public TaskController(TaskService taskService)
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
         }
 
-        // GET: /Task
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            var tasks = _taskService.GetAllTasks(User.Identity.Name);
+            var tasks = await _taskService.GetAllTasksAsync();
             return View(tasks);
         }
 
-        // GET: /Task/Create
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Task/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Task model)
+        public async Task<IActionResult> Create(TaskModel task)
         {
             if (ModelState.IsValid)
             {
-                _taskService.CreateTask(model, User.Identity.Name);
-                return RedirectToAction("Index");
-            }
-            return View(model);
-        }
-
-        // GET: /Task/Edit/{id}
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var task = _taskService.GetTaskById(id, User.Identity.Name);
-            if (task == null)
-            {
-                return NotFound();
+                await _taskService.CreateTaskAsync(task);
+                return RedirectToAction(nameof(Index));
             }
             return View(task);
         }
 
-        // POST: /Task/Edit/{id}
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var task = await _taskService.GetTaskByIdAsync(id);
+            return View(task);
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Task model)
+        public async Task<IActionResult> Edit(TaskModel task)
         {
             if (ModelState.IsValid)
             {
-                _taskService.UpdateTask(model, User.Identity.Name);
-                return RedirectToAction("Index");
-            }
-            return View(model);
-        }
-
-        // POST: /Task/Delete/{id}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
-        {
-            _taskService.DeleteTask(id, User.Identity.Name);
-            return RedirectToAction("Index");
-        }
-
-        // GET: /Task/Details/{id}
-        [HttpGet]
-        public IActionResult Details(int id)
-        {
-            var task = _taskService.GetTaskById(id, User.Identity.Name);
-            if (task == null)
-            {
-                return NotFound();
+                await _taskService.UpdateTaskAsync(task);
+                return RedirectToAction(nameof(Index));
             }
             return View(task);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var task = await _taskService.GetTaskByIdAsync(id);
+            return View(task);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _taskService.DeleteTaskAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

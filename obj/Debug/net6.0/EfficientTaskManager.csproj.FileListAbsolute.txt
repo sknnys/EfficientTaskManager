@@ -1,0 +1,6 @@
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.csproj.AssemblyReference.cache
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.AssemblyInfoInputs.cache
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.AssemblyInfo.cs
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.csproj.CoreCompileInputs.cache
+/workspaces/EfficientTaskManager/obj/Debug/net6.0/EfficientTaskManager.sourcelink.json

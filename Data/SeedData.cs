@@ -1,39 +1,29 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using EfficientTaskManager.Models;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
+using EfficientTaskManager.Data; // Adicione o namespace correto
+using Microsoft.EntityFrameworkCore; // Adicione o pacote EF Core
+using EfficientTaskManager.Models;
 
 namespace EfficientTaskManager.Data
 {
     public static class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider, UserManager<User> userManager)
+        public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                // Verifica se já existem dados no banco de dados
                 if (context.Users.Any())
                 {
-                    return; // O banco de dados já está populado
+                    return;   // DB has been seeded
                 }
 
-                // Cria um usuário de exemplo
-                var user = new User { UserName = "exampleuser", Email = "example@example.com" };
-                var result = await userManager.CreateAsync(user, "Password123!");
+                context.Users.AddRange(
+                    new User { UserName = "admin", Email = "admin@example.com" }
+                );
 
-                if (result.Succeeded)
-                {
-                    // Cria algumas tarefas de exemplo
-                    context.Tasks.AddRange(
-                        new Task { Title = "Sample Task 1", Description = "This is a sample task.", UserId = user.Id, DueDate = DateTime.Now.AddDays(1) },
-                        new Task { Title = "Sample Task 2", Description = "This is another sample task.", UserId = user.Id, DueDate = DateTime.Now.AddDays(2) }
-                    );
-
-                    await context.SaveChangesAsync();
-                }
+                context.SaveChanges();
             }
         }
     }
