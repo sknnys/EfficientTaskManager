@@ -66,3 +66,6 @@ secrets.json
 # Local History #
 ##################
 .localhistory/
+
+# Ignore appsettings.json
+appsettings.json
